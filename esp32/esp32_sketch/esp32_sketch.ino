@@ -1,37 +1,23 @@
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
-#include <SPI.h>
-
-// Assign SPI GPIO pins
-#define BME_SCK 18
-#define BME_MISO 19
-#define BME_MOSI 23
-#define BME_CS 5
+#include <Adafruit_BMP280.h>
+#include <WiFi.h>
+#include <Wire.h>
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+const char* ssid = "aalto open";
+const char* password = "";
 
-Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // Setup software SPI
-// Adafruit_BME280 bme(BME_CS) // Or use hardware SPI which will use the board's default SPI GPIO pins
 
-unsigned long delayTime;
+Adafruit_BMP280 bmp; // I2C
+
+unsigned long delayTime = 10000;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println(F("BME280 test"));
+  Serial.begin(115200);
 
-  bool status;
-
-  status = bme.begin();  
-  if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
-  }
-
-  Serial.println("-- Default Test --");
-  delayTime = 1000;
-
-  Serial.println();
+  initSensor(); // Setup BMP280 sensor
+  initWiFi(); // Connect to WiFi
 }
 
 
@@ -42,25 +28,51 @@ void loop() {
 
 void printValues() {
   Serial.print("Temperature = ");
-  Serial.print(bme.readTemperature());
+  Serial.print(bmp.readTemperature());
   Serial.println(" *C");
-  
+  Serial.print("Pressure = ");
+  Serial.print(bmp.readPressure() / 100.0F);
+  Serial.println(" hPa");
+
+  // For BME280 sensor
   // Convert temperature to Fahrenheit
   /*Serial.print("Temperature = ");
   Serial.print(1.8 * bme.readTemperature() + 32);
   Serial.println(" *F");*/
-  
-  Serial.print("Pressure = ");
-  Serial.print(bme.readPressure() / 100.0F);
-  Serial.println(" hPa");
 
-  Serial.print("Approx. Altitude = ");
-  Serial.print(bme.readAltitude(SEALEVELPRESSURE_HPA));
-  Serial.println(" m");
+  // Serial.print("Approx. Altitude = ");
+  // Serial.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
+  // Serial.println(" m");
 
-  Serial.print("Humidity = ");
-  Serial.print(bme.readHumidity());
-  Serial.println(" %");
+  Serial.println();
+}
+
+void initWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.print(("Connecting to WiFi ..."));
+  while (WiFi.status() != WL_CONNECTED){
+    Serial.print('.');
+    delay(1000);
+  }
+  Serial.println("\nWiFi connected!");
+  Serial.println("Local IPv4:");
+  Serial.println(WiFi.localIP());
+}
+
+void initSensor() {
+  Serial.println(F("BME280 test"));
+
+  bool status;
+
+  status = bmp.begin(0x76);  
+  if (!status) {
+    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    while (1);
+  }
+
+  Serial.println("-- Default Test --");
+  delayTime = 1000;
 
   Serial.println();
 }
