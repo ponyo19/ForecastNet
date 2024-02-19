@@ -19,6 +19,7 @@ For ESP32 Arduino IDE:
 - esp32 by Espressif Systems
 - Adafruit Unified Sensor
 - Adafruit BMP280
+- NPTClient by Taranais
 
 For Raspberry Pi Raspbian OS:
 - apache2
