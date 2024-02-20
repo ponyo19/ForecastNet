@@ -20,6 +20,7 @@ For ESP32 Arduino IDE:
 - Adafruit Unified Sensor
 - Adafruit BMP280
 - NPTClient by Taranais
+- PubSubClient by Nick O'Leary
 
 For Raspberry Pi Raspbian OS:
 - apache2
@@ -27,6 +28,8 @@ For Raspberry Pi Raspbian OS:
 - mariadb-server
 - php-mysql
 - phpmyadmin
+- mosquitto
+- mosquitto-clients
 
 ... To be updated
 
