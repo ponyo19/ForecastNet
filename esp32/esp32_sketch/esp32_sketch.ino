@@ -6,20 +6,35 @@
 #include <Wire.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <PubSubClient.h>
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+// CHANGE PARAMETERS!
 // Setup WiFi connection
-const char* ssid = "aalto open"; // CHANGE THIS!
+const char* ssid = ""; // CHANGE THIS!
 const char* password = "";  // CHANGE THIS!
 
-// Setup sensor connection
-Adafruit_BMP280 bmp; // I2C
+// Setup MQTT connection
+const char* mqtt_server = ""; // CHANGE THIS!
+const char* mqtt_username = ""; // CHANGE THIS!
+const char* mqtt_password = ""; // CHANGE THIS!
+const char* clientID = "Home"; // CHANGE THIS!
+const char* temperature_topic = "temperature";
 
-// Retrieve date and time
+// Set timezone in GMT time, i.e: timeZone = 2 for GMT +2
+int timeZone = 2; // CHANGE THIS! 
+
+// Setup I2C sensor connection
+Adafruit_BMP280 bmp; 
+
+// Initialise WiFi and MQTT client object
+WiFiClient wifiClient;
+PubSubClient client(mqtt_server, 1883, wifiClient);
+
+// Initialise time client object
 WiFiUDP ntpUDP;
-int timeZone = 2; // CHANGE THIS! Set timezone in GMT time, i.e: timeZone = 2 for GMT +2
-NTPClient timeClient(ntpUDP, timeZone * 3600); // Setup an UDP Client to retrieve date and 
+NTPClient timeClient(ntpUDP, timeZone * 3600); // Setup an UDP Client to retrieve date and time
 String formattedDate;
 String date;
 String timestamp;
@@ -28,8 +43,8 @@ unsigned long delayTime = 10000;
 
 void setup() {
   Serial.begin(115200);
-
   initWiFi(); // Connect to WiFi
+  initMQTT(); // Connect to MQTT broker
   initSensor(); // Setup sensor
 }
 
@@ -78,14 +93,30 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+void initMQTT() {
+  // Connect to MQTT Broker
+    while (!client.connected()) {
+    Serial.print("Connecting to MQTT broker ...");
+    if (client.connect("ESP32Client", mqtt_username, mqtt_password)) {
+      Serial.println("\nMQTT broker connected!");
+    } 
+    else {
+      Serial.print("\nMQTT broker not connected: ");
+      Serial.print(client.state());
+      Serial.println("Retrying.");
+      delay(5000);
+    }
+  }
+}
+
 void initSensor() {
-  Serial.println(F("BME280 test"));
+  Serial.println(F("BMP280 test"));
 
   bool status;
 
   status = bmp.begin(0x76);  
   if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    Serial.println("Could not find a valid BMP280 sensor, check wiring!");
     while (1);
   }
 
