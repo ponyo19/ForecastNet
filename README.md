@@ -25,6 +25,8 @@ For ESP32 Arduino IDE:
 For Raspberry Pi Raspbian OS:
 - apache2
 - php
+- python3
+- paho-mqtt
 - mariadb-server
 - php-mysql
 - phpmyadmin
