@@ -97,14 +97,13 @@ void initWiFi() {
 void connect_MQTT() {
   // Connect to MQTT Broker
     while (!client.connected()) {
-    Serial.print("Connecting to MQTT broker ...");
-    if (client.connect("ESP32Client", mqtt_username, mqtt_password)) {
-      Serial.println("\nMQTT broker connected!");
+    Serial.println("Connecting to MQTT broker ...");
+    if (client.connect(clientID, mqtt_username, mqtt_password)) {
+      Serial.println("MQTT broker connected!");
     } 
     else {
-      Serial.print("\nMQTT broker not connected: ");
-      Serial.print(client.state());
-      Serial.println("Retrying.");
+      Serial.print("MQTT broker not connected: ");
+      Serial.println(client.state());
       delay(5000);
     }
   }
