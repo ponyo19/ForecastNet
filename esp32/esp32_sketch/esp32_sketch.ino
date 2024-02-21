@@ -20,7 +20,8 @@ const char* mqtt_server = ""; // CHANGE THIS!
 const char* mqtt_username = ""; // CHANGE THIS!
 const char* mqtt_password = ""; // CHANGE THIS!
 const char* clientID = "Home"; // CHANGE THIS!
-const char* temperature_topic = "temperature";
+const char* readings_topic = "readings";
+char data[80];
 
 // Set timezone in GMT time, i.e: timeZone = 2 for GMT +2
 int timeZone = 2; // CHANGE THIS! 
@@ -39,44 +40,44 @@ String formattedDate;
 String date;
 String timestamp;
 
-unsigned long delayTime = 10000;
+// Delay time between transmissions
+unsigned long delayTime = 60000;
 
 void setup() {
   Serial.begin(115200);
   initWiFi(); // Connect to WiFi
-  initMQTT(); // Connect to MQTT broker
   initSensor(); // Setup sensor
 }
 
 
 void loop() { 
-  printValues();
+  connect_MQTT();
+  Serial.setTimeout(2000);
+  send_MQTT();
   delay(delayTime);
 }
 
-void printValues() {
+void send_MQTT() {
   getAndFormatTime();
   Serial.print("Date: ");
   Serial.println(date);
   Serial.print("Time: ");
   Serial.println(timestamp);
   Serial.print("Temperature = ");
-  Serial.print(bmp.readTemperature());
+  float temperature = bmp.readTemperature();
+  Serial.print(temperature);
   Serial.println(" *C");
-  Serial.print("Pressure = ");
-  Serial.print(bmp.readPressure() / 100.0F);
-  Serial.println(" hPa");
 
-  // For BME280 sensor
-  // Convert temperature to Fahrenheit
-  /*Serial.print("Temperature = ");
-  Serial.print(1.8 * bme.readTemperature() + 32);
-  Serial.println(" *F");*/
+  String readings = formattedDate + "R" + String(temperature); 
+  readings.toCharArray(data, (readings.length() + 1));
 
-  // Serial.print("Approx. Altitude = ");
-  // Serial.print(bmp.readAltitude(SEALEVELPRESSURE_HPA));
-  // Serial.println(" m");
-
+  if(client.publish(readings_topic, data)) {
+    Serial.println("Readings sent!");
+  }
+  else{
+    Serial.println("Readings failed to send!");
+  }
+  
   Serial.println();
 }
 
@@ -93,7 +94,7 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
-void initMQTT() {
+void connect_MQTT() {
   // Connect to MQTT Broker
     while (!client.connected()) {
     Serial.print("Connecting to MQTT broker ...");
