@@ -7,7 +7,7 @@ mqtt_username = ""  # CHANGE THIS
 mqtt_password = ""  # CHANGE THIS
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties):
     print("Connected with result code: " + str(rc))
     client.subscribe(mqtt_topic)
 
