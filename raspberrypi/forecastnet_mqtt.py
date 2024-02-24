@@ -23,7 +23,7 @@ def on_connect(client, userdata, flags, rc, properties):
 
 def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
-    payload = json.load(msg.payload.decode("utf-8"))
+    payload = json.loads(msg.payload.decode("utf-8"))
     cursor = mydb.cursor()
     temperature = payload["temperature"]
     date = payload["date"]
@@ -33,6 +33,8 @@ def on_message(client, userdata, msg):
     sql = "INSERT INTO sensorData (location, temperature, date, time) VALUES (%s, %s, %s, %s)"
     val = (location, temperature, date, time)
     cursor.execute(sql, val)
+    
+    mydb.commit()
 
 
 mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
