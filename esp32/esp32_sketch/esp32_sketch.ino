@@ -68,7 +68,7 @@ void send_MQTT() {
   Serial.print(temperature);
   Serial.println(" *C");
 
-  String readings = formattedDate + "R" + String(temperature); 
+  String readings = formattedDate + String(temperature); 
   readings.toCharArray(data, (readings.length() + 1));
 
   if(client.publish(readings_topic, data)) {
