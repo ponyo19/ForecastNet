@@ -69,7 +69,7 @@ void send_MQTT() {
   Serial.print(temperature);
   Serial.println(" *C");
 
-  String readings = "{\"temperature\":\"" + String(temperature) + "\", \"date\":\"" + date + "\", \"time\":\"" + timestamp + "\"}";
+  String readings = "{\"temperature\":\"" + String(temperature) + "\", \"date\":\"" + date + "\", \"time\":\"" + timestamp + "\", \"location\":\"" + clientID "\"}";
   readings.toCharArray(data, (readings.length() + 1));
 
   if(client.publish(readings_topic, data)) {
