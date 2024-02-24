@@ -54,6 +54,7 @@ void loop() {
   connect_MQTT();
   Serial.setTimeout(2000);
   send_MQTT();
+  client.disconnect();
   delay(delayTime);
 }
 
@@ -68,7 +69,7 @@ void send_MQTT() {
   Serial.print(temperature);
   Serial.println(" *C");
 
-  String readings = formattedDate + String(temperature); 
+  String readings = "{\"temperature\":\"" + String(temperature) + "\", \"date\":\"" + date + "\", \"time\":\"" + timestamp + "\"}";
   readings.toCharArray(data, (readings.length() + 1));
 
   if(client.publish(readings_topic, data)) {
@@ -95,6 +96,7 @@ void initWiFi() {
 }
 
 void connect_MQTT() {
+
   // Connect to MQTT Broker
     while (!client.connected()) {
     Serial.println("Connecting to MQTT broker ...");
