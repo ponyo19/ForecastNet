@@ -46,5 +46,8 @@ For Raspberry Pi Raspbian OS:
 - EXTRA: Check if the broker port 1883 on the server is open by running ```nmap -p 1883 <broker address>``` from a computer in the local network. Open the port if closed.
 - (Recommended) Create and use a Python virtual environment
 - Run ```pip install -r ./raspberrypi/requirements.txt``` to install necessary Python libraries
+- Modify MQTT and MySQL credentials and run ```python ./raspberrypi/forecastnet_server.py``` to start the server for uploading sensor data. 
+- Data sent from ESP32 can now be browsed by accessing ```<your server address>/myphpadmin``` from a browser on any computer in the local network
+
 ... To be updated
 
