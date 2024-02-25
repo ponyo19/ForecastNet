@@ -8,6 +8,11 @@
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
+#define uS_TO_S_FACTOR \
+  1000000                 /* Conversion factor for micro seconds to seconds */
+#define TIME_TO_SLEEP 300 /* Time ESP32 will go to sleep (in seconds) */
+RTC_DATA_ATTR int bootCount = 0;
+
 // CHANGE PARAMETERS!
 // Setup WiFi connection
 const char* ssid = "";      // CHANGE THIS!
@@ -44,17 +49,27 @@ unsigned long delayTime = 60000;
 
 void setup() {
   Serial.begin(115200);
+  ++bootCount;
+  Serial.println("Boot number: " + String(bootCount));
+
   initWiFi();    // Connect to WiFi
   initSensor();  // Setup sensor
-}
-
-void loop() {
   connect_MQTT();
   Serial.setTimeout(2000);
   send_MQTT();
   client.disconnect();
-  delay(delayTime);
+
+  // Put the ESP32 to sleep
+  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+  Serial.println("Setup ESP32 to sleep for every " + String(TIME_TO_SLEEP) +
+                 " Seconds");
+  Serial.println("Going to sleep now");
+  delay(1000);
+  Serial.flush();
+  esp_deep_sleep_start();
 }
+
+void loop() {}
 
 void send_MQTT() {
   getAndFormatTime();
