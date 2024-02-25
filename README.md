@@ -26,12 +26,25 @@ For Raspberry Pi Raspbian OS:
 - apache2
 - php
 - python3
-- paho-mqtt
 - mariadb-server
 - php-mysql
 - phpmyadmin
 - mosquitto
 - mosquitto-clients
 
+## How to run this project
+### On ESP32
+- Setup the board following this schema
+- Install all required libraries
+- Load the source code at ```./esp32/esp32_sketch/esp32_sketch.ino``` to Arduino IDE
+- Change WiFi and MQTT credentials
+- Upload the modified code to ESP32
+
+### On Raspberry Pi
+- Install all required libraries
+- Setup mosquitto MQTT broker and MySQL database following this [tutorial](https://randomnerdtutorials.com/raspberry-pi-apache-mysql-php-lamp-server/)
+- EXTRA: Check if the broker port 1883 on the server is open by running ```nmap -p 1883 <broker address>``` from a computer in the local network. Open the port if closed.
+- (Recommended) Create and use a Python virtual environment
+- Run ```pip install -r ./raspberrypi/requirements.txt``` to install necessary Python libraries
 ... To be updated
 
