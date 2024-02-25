@@ -12,8 +12,16 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",  # Default mysql username
     password="",  # CHANGE TO YOUR DATABASE PASSWORD
-    database="forecastnet",
 )
+
+# Database initialization
+cursor = mydb.cursor()
+cursor.execute("CREATE DATABASE IF NOT EXISTS forecastnet")
+cursor.execute("USE forecastnet")
+cursor.execute(
+    "CREATE TABLE IF NOT EXISTS sensorData (id INT(6) AUTO_INCREMENT PRIMARY KEY, location VARCHAR(255) NOT NULL, temperature FLOAT(4,2) NOT NULL, date DATE NOT NULL, time TIME NOT NULL)"
+)
+cursor.close()
 
 
 def on_connect(client, userdata, flags, rc, properties):
@@ -33,7 +41,7 @@ def on_message(client, userdata, msg):
     sql = "INSERT INTO sensorData (location, temperature, date, time) VALUES (%s, %s, %s, %s)"
     val = (location, temperature, date, time)
     cursor.execute(sql, val)
-    
+
     mydb.commit()
 
 
