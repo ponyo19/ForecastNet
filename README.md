@@ -1,6 +1,6 @@
 # ML-enhanced weather station network
 
-This project is a IoT weather station network that displays past data and forecasts using Linear Regression on a website.
+This project is a IoT weather station network that displays past data and forecasts.
 
 ## Overview
 - A station in the network consists of an ESP32 and a BMP280 sensor.
