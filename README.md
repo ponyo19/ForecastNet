@@ -1,4 +1,4 @@
-# ForecastNet: A ML-enhanced weather station network
+# ML-enhanced weather station network
 
 This project is a IoT weather station network that displays past data and forecasts using Linear Regression on a website.
 
@@ -6,8 +6,8 @@ This project is a IoT weather station network that displays past data and foreca
 - A station in the network consists of an ESP32 and a BMP280 sensor.
 - The Raspberry Pi works as an always-on server.
 - MQTT is used for communication between the stations and the server.
-- LAMP stack (Linux/ Apache/ MySQL/ PHP) manages and stores data in a MySQL database and builds web interface for displaying data.
-- Prediction is performed using a Python script that parses data from MySQL for model training and prediction with scikit-learn.
+- LAMP stack (Linux/ Apache/ MySQL/ PHP) and Python manages and stores data in a MySQL database and builds web interface for displaying data.
+- Prediction is performed using tinyML.
 
 ## Preparation
 ### Parts required
@@ -15,12 +15,14 @@ This project is a IoT weather station network that displays past data and foreca
 - An ESP32 and a BMP280 sensor for each station.
 
 ### Required libraries
-For ESP32 Arduino IDE:
+For ESP32:
 - esp32 by Espressif Systems
 - Adafruit Unified Sensor
 - Adafruit BMP280
 - NPTClient by Taranais
 - PubSubClient by Nick O'Leary
+- ESPAsyncWebServer
+- AsyncTCP
 
 For Raspberry Pi Raspbian OS:
 - apache2
